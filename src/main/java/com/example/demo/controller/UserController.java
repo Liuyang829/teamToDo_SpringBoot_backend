@@ -22,7 +22,7 @@ public class UserController {
 
         //根据cookie获取信息
         User user = (User) subject.getPrincipal();
-        String message= "hello "+user.getName();
+        String message= "hello test "+user.getName();
         return ResultFactory.buildSuccessResult(message);
     }
 
