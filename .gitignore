@@ -1,0 +1,10 @@
+
+
+/src/main/resources/application.properties
+/.mvn/
+.idea/
+src/main/resources/
+src/test/
+target/classes/application.properties
+target/generated-sources/
+target/generated-test-sources/
