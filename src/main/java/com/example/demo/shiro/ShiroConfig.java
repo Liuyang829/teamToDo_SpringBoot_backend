@@ -30,9 +30,10 @@ public class ShiroConfig {
          *      role: 该资源必须得到角色权限才可以访问
          */
         Map<String, String> filerMap = new LinkedHashMap<>();
-        filerMap.put("/hello", "perms[admin]");
-
         filerMap.put("/login", "anon");
+
+        filerMap.put("/hello", "perms[admin]");
+        filerMap.put("/*","authc");
 
 
         shiroFilterFactoryBean.setLoginUrl("/toLogin");
