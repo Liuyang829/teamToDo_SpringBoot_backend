@@ -7,11 +7,11 @@
     <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
     resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
     <select id="getByOwnerId" parameterType="Integer" resultType="Project">
-        select * from Project where owner_id = #{owner_id}
+        select id,name,description,level,state,start_time,end_time,created from Project where owner_id = #{owner_id}
     </select>
 
     <insert id="addProject" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        insert into Project(name,password,email,role) values(#{name},#{password},#{email},#{role})
+        insert into Project(name,description,level,state,owner_id,start_time,end_time,created) values(#{name},#{description},#{level},#{state},#{owner_id},#{start_time},#{end_time},#{created})
     </insert>
 
 

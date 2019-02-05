@@ -1,9 +1,11 @@
 package com.example.demo.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Project {
     private Integer id;
     private String name;
@@ -28,6 +30,26 @@ public class Project {
         this.start_time = start_time;
         this.end_time = end_time;
         this.created = created;
+    }
+
+    public Project(Integer id, String name, String description, String level, String state, Date start_time, Date end_time, Date created) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.level = level;
+        this.state = state;
+        this.start_time = start_time;
+        this.end_time = end_time;
+        this.created = created;
+    }
+
+    public Project(String name, String description, String level, String state, Date start_time, Date end_time) {
+        this.name = name;
+        this.description = description;
+        this.level = level;
+        this.state = state;
+        this.start_time = start_time;
+        this.end_time = end_time;
     }
 
     public Integer getId() {
@@ -70,11 +92,11 @@ public class Project {
         this.state = state;
     }
 
-    public Integer getOwner() {
+    public Integer getOwner_id() {
         return owner_id;
     }
 
-    public void setOwner(Integer owner_id) {
+    public void setOwner_id(Integer owner_id) {
         this.owner_id = owner_id;
     }
 
@@ -100,5 +122,20 @@ public class Project {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", level='" + level + '\'' +
+                ", state='" + state + '\'' +
+                ", owner_id=" + owner_id +
+                ", start_time=" + start_time +
+                ", end_time=" + end_time +
+                ", created=" + created +
+                '}';
     }
 }
