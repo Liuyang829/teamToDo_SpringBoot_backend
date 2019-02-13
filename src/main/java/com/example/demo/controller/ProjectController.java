@@ -43,4 +43,19 @@ public class ProjectController {
         projectService.addProject(project);
         return ResultFactory.buildSuccessResult(null);
     }
+
+    @RequestMapping(method= RequestMethod.DELETE,value = "/project")
+    public Result delProject(int project_id){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+
+        Project project=projectService.getById(project_id);
+        if(project!=null){
+            if(project.getOwner_id().equals(user.getId())){
+                projectService.deleteProject(project_id);
+                return ResultFactory.buildSuccessResult(null);
+            }else return ResultFactory.buildForbiddenResult(null);
+        }
+        return ResultFactory.buildFailResult("删除失败");
+    }
 }

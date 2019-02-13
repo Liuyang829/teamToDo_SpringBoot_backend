@@ -17,9 +17,19 @@ public class ProjectServiceImpl implements ProjectService {
         return projectMapper.getByOwnerId(owner_id);
     }
 
+
+    @Override
+    public Project getById(Integer id) {
+        return projectMapper.getById(id);
+    }
+
     @Override
     public void addProject(Project project) {
         projectMapper.addProject(project);
-        return;
+    }
+
+    @Override
+    public void deleteProject(Integer id) {
+        projectMapper.deleteProject(id);
     }
 }
