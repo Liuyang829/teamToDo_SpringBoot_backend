@@ -25,6 +25,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public String getRelation(Project_User project_user) {
+        return projectMapper.getRelation(project_user);
+    }
+
+    @Override
     public Integer addProject(Project project) {
         return projectMapper.addProject(project);
     }

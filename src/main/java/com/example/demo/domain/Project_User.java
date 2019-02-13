@@ -13,6 +13,11 @@ public class Project_User {
         this.role = role;
     }
 
+    public Project_User(Integer user_id, Integer project_id) {
+        this.user_id = user_id;
+        this.project_id = project_id;
+    }
+
     public Project_User(Integer user_id, Integer project_id, String role) {
         this.user_id = user_id;
         this.project_id = project_id;

@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/projects")
@@ -70,12 +73,17 @@ public class ProjectController {
     }
 
     @RequestMapping(method= RequestMethod.GET,value = "/tasks")
-    public Result getTask(Integer project_id){
+    public Result getTask(int project_id){
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
-        List<Task> taskList=taskService.getByProjectId(project_id);
-        return null;
 
+        Project_User temp=new Project_User(user.getId(),project_id);
+        String role=projectService.getRelation(temp);
+        if (role!=null){
+            List<Task> taskList=taskService.getByProjectId(project_id);
+            return ResultFactory.buildSuccessResult(taskList);
+        }
+        return ResultFactory.buildFailResult("无法操作");
     }
 
     @RequestMapping(method= RequestMethod.POST,value = "/tasks")

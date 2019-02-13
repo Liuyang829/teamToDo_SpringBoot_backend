@@ -14,6 +14,11 @@
         select * from Project where id = #{id}
     </select>
 
+    <select id="getRelation" parameterType="Project_User" resultType="String">
+        select role from Project_User where user_id=#{user_id} and project_id=#{project_id} limit 1
+    </select>
+
+
     <insert id="addProject" parameterType="User" useGeneratedKeys="true" keyProperty="id" >
         insert into Project(name,description,level,state,owner_id,start_time,end_time,created) values(#{name},#{description},#{level},#{state},#{owner_id},#{start_time},#{end_time},#{created})
     </insert>
