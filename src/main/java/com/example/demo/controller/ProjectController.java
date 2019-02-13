@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Project;
+import com.example.demo.domain.Project_User;
 import com.example.demo.domain.Task;
 import com.example.demo.domain.User;
 import com.example.demo.service.ProjectService;
@@ -47,6 +48,9 @@ public class ProjectController {
         Date currentDate = new java.sql.Date(System.currentTimeMillis());
         project.setCreated(currentDate);
         projectService.addProject(project);
+
+        Project_User project_user=new Project_User(user.getId(),project.getId(),"creator");
+        projectService.addRelation(project_user);
         return ResultFactory.buildSuccessResult(null);
     }
 
