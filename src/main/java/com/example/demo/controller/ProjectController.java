@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Project;
+import com.example.demo.domain.Task;
 import com.example.demo.domain.User;
 import com.example.demo.service.ProjectService;
+import com.example.demo.service.TaskService;
 import com.example.demo.utils.Result;
 import com.example.demo.utils.ResultFactory;
 import org.apache.shiro.SecurityUtils;
@@ -18,11 +20,15 @@ import java.sql.Date;
 import java.util.List;
 
 @RestController
+@RequestMapping("/projects")
 public class ProjectController {
     @Autowired
     ProjectService projectService;
 
-    @RequestMapping(method= RequestMethod.GET,value = "/project")
+    @Autowired
+    TaskService taskService;
+
+    @RequestMapping(method= RequestMethod.GET)
     public Result getProject(){
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
@@ -30,7 +36,7 @@ public class ProjectController {
         return ResultFactory.buildSuccessResult(projectList);
     }
 
-    @RequestMapping(method= RequestMethod.POST,value = "/project")
+    @RequestMapping(method= RequestMethod.POST)
     public Result addProject(String name, String description, String level, String state, Date start_time, Date  end_time){
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
@@ -44,7 +50,7 @@ public class ProjectController {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    @RequestMapping(method= RequestMethod.DELETE,value = "/project")
+    @RequestMapping(method= RequestMethod.DELETE)
     public Result delProject(int project_id){
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
@@ -57,5 +63,24 @@ public class ProjectController {
             }else return ResultFactory.buildForbiddenResult(null);
         }
         return ResultFactory.buildFailResult("删除失败");
+    }
+
+    @RequestMapping(method= RequestMethod.GET,value = "/tasks")
+    public Result getTask(Integer project_id){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        List<Task> taskList=taskService.getByProjectId(project_id);
+        return null;
+
+    }
+
+    @RequestMapping(method= RequestMethod.POST,value = "/tasks")
+    public Result addTask(String name, String description, String level, String state, Date start_time, Date  end_time){
+        return null;
+    }
+
+    @RequestMapping(method= RequestMethod.DELETE,value = "/tasks")
+    public Result delTask(int project_id){
+        return null;
     }
 }
