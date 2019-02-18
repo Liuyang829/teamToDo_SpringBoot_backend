@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.cors.Cors;
 import com.example.demo.domain.User;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.Result;
@@ -10,12 +11,14 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+@CrossOrigin
+public class UserController extends Cors {
     @RequestMapping("/hello")
     public Result hello() {
         Subject subject = SecurityUtils.getSubject();

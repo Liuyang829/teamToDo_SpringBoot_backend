@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.cors.Cors;
 import com.example.demo.domain.Project;
 import com.example.demo.domain.Project_User;
 import com.example.demo.domain.Task;
@@ -12,10 +13,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -25,7 +23,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/projects")
-public class ProjectController {
+@CrossOrigin
+public class ProjectController extends Cors {
     @Autowired
     ProjectService projectService;
 
