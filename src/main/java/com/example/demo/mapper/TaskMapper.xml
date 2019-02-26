@@ -6,8 +6,8 @@
 
     <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
     resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
-    <select id="getByProjectId" parameterType="int" resultType="Task">
-        select * from Task where project_id = #{id}
+    <select id="getByProjectId" parameterType="int" resultType="java.util.Map">
+        select id,name,description,level,state,owner_id,DATE_FORMAT(start_time ,"%Y-%m-%d") AS start_time,DATE_FORMAT(end_time ,"%Y-%m-%d") AS end_time,DATE_FORMAT(created ,"%Y-%m-%d") AS created from Task where project_id = #{id}
     </select>
 
     <select id="getById" parameterType="int" resultType="Task">

@@ -82,7 +82,7 @@ public class ProjectController extends Cors {
         Map<String, Object> map = new HashMap<>();
         map.put("project", project);
         if (role != null) {
-            List<Task> taskList = taskService.getByProjectId(project_id);
+            List<Map> taskList = taskService.getByProjectId(project_id);
             map.put("tasks", taskList);
             return ResultFactory.buildSuccessResult(map);
         }
