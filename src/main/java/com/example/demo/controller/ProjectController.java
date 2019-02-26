@@ -76,22 +76,56 @@ public class ProjectController extends Cors {
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
 
+        Project project = projectService.getById(project_id);
         Project_User temp=new Project_User(user.getId(),project_id);
+
         String role=projectService.getRelation(temp);
+
+        Map<String,Object> map= new HashMap<>();
+        map.put("project",project);
         if (role!=null){
             List<Task> taskList=taskService.getByProjectId(project_id);
-            return ResultFactory.buildSuccessResult(taskList);
+            map.put("tasks",taskList);
+            return ResultFactory.buildSuccessResult(map);
         }
         return ResultFactory.buildFailResult("无法操作");
     }
 
     @RequestMapping(method= RequestMethod.POST,value = "/tasks")
-    public Result addTask(String name, String description, String level, String state, Date start_time, Date  end_time){
-        return null;
+    public Result addTask(int project_id,String name, String description, String level, String state, Date start_time, Date  end_time,int creator_id){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+
+        Project_User temp=new Project_User(user.getId(),project_id);
+        String role=projectService.getRelation(temp);
+
+        if (role!=null){
+            Date currentDate = new java.sql.Date(System.currentTimeMillis());
+
+            Task task=new Task(name,description,level,state,user.getId(),start_time,end_time,currentDate,creator_id,project_id);
+            taskService.addTask(task);
+            return ResultFactory.buildSuccessResult(null);
+        }
+        return ResultFactory.buildFailResult("无法操作");
     }
 
     @RequestMapping(method= RequestMethod.DELETE,value = "/tasks")
-    public Result delTask(int project_id){
-        return null;
+    public Result delTask(int project_id,int task_id){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+
+        Project_User temp=new Project_User(user.getId(),project_id);
+        String role=projectService.getRelation(temp);
+
+        if(role!=null){
+            Task task=taskService.getById(task_id);
+            if(task.getProject_id()==project_id){
+                taskService.delTask(task_id);
+            }else {
+                return ResultFactory.buildFailResult("无法操作");
+            }
+
+        }
+        return ResultFactory.buildFailResult("无法操作");
     }
 }

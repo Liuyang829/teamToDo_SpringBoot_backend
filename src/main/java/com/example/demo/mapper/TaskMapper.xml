@@ -6,15 +6,23 @@
 
     <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
     resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
-    <select id="getByProjectId" parameterType="string" resultType="Task">
+    <select id="getByProjectId" parameterType="int" resultType="Task">
         select * from Task where project_id = #{id}
+    </select>
+
+    <select id="getById" parameterType="int" resultType="Task">
+        select * from Task where id = #{id} limit 1
     </select>
 
 
     <insert id="addTask" parameterType="Task" useGeneratedKeys="true" keyProperty="id">
-        insert into Project(name,description,level,state,owner_id,start_time,end_time,created) values(#{name},#{description},#{level},#{state},#{owner_id},#{start_time},#{end_time},#{created})
+        insert into Task(name,description,level,state,owner_id,start_time,end_time,created,creator_id,project_id)
+        values(#{name},#{description},#{level},#{state},#{owner_id},#{start_time},#{end_time},#{created},#{creator_id},#{project_id})
     </insert>
 
+    <delete id="delTask" parameterType="Integer">
+        delete from Task where id = #{id}
+    </delete>
 
 
 </mapper>

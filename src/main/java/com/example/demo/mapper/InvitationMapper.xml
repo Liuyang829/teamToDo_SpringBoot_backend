@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.InvitationMapper">
+
+    <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
+    resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
+    <select id="getByProjectId" parameterType="int" resultType="Invitation">
+        select * from Invitation where project_id = #{id}
+    </select>
+
+    <select id="getByToUserId" parameterType="int" resultType="Invitation">
+        select * from Invitation where to_user_id = #{to_user_id}
+    </select>
+
+    <select id="getById" parameterType="int" resultType="Invitation">
+        select * from Invitation where id = #{id} limit 1
+    </select>
+
+
+    <insert id="addInvitation" parameterType="Invitation" useGeneratedKeys="true" keyProperty="id">
+        insert into Invitation(project_id,from_user_id,to_user_id,status,Date created)
+        values(#{project_id},#{from_user_id},#{to_user_id},#{status},#{created})
+    </insert>
+
+    <delete id="delInvitation" parameterType="int">
+        delete from Invitation where id = #{id}
+    </delete>
+
+
+</mapper>

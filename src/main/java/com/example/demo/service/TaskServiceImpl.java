@@ -18,7 +18,17 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public void addTask(Task task) {
+    public Task getById(Integer id) {
+        return null;
+    }
 
+    @Override
+    public void addTask(Task task) {
+        taskMapper.addTask(task);
+    }
+
+    @Override
+    public void delTask(Integer task_id) {
+        taskMapper.delTask(task_id);
     }
 }

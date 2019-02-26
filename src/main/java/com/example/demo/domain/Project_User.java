@@ -55,4 +55,14 @@ public class Project_User {
     public void setRole(String role) {
         this.role = role;
     }
+
+    @Override
+    public String toString() {
+        return "Project_User{" +
+                "id=" + id +
+                ", user_id=" + user_id +
+                ", project_id=" + project_id +
+                ", role='" + role + '\'' +
+                '}';
+    }
 }
