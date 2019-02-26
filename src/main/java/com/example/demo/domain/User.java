@@ -1,5 +1,8 @@
 package com.example.demo.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class User {
     private String name;
     private Integer id;
@@ -21,6 +24,7 @@ public class User {
         this.role = role;
         this.password = password;
     }
+
 
     public String getName() {
         return name;

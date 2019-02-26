@@ -48,7 +48,9 @@ public class UserController extends Cors {
         UsernamePasswordToken token = new UsernamePasswordToken(email, password);
         try {
             subject.login(token);
-            return ResultFactory.buildSuccessResult(null);
+            User user = (User) subject.getPrincipal();
+            user.setPassword(null);
+            return ResultFactory.buildSuccessResult(user);
         } catch (UnknownAccountException e) {
             // e.printStackTrace();
             return ResultFactory.buildFailResult("用户名不存在");
