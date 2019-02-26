@@ -6,18 +6,25 @@
 
     <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
     resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
-    <select id="getByOwnerId" parameterType="Integer" resultType="Project">
-        select id,name,description,level,state,start_time,end_time,created from Project where owner_id = #{owner_id}
+    <select id="getByOwnerId" parameterType="Integer" resultType="java.util.Map">
+        select id,name,description,level,state,DATE_FORMAT(start_time ,"%Y-%m-%d") AS start_time,DATE_FORMAT(end_time ,"%Y-%m-%d") AS end_time,DATE_FORMAT(created ,"%Y-%m-%d") AS created from Project where owner_id = #{owner_id}
     </select>
 
     <select id="getById" parameterType="Integer" resultType="Project">
-        select * from Project where id = #{id}
+        select * from Project where id = #{id} limit 1
+    </select>
+
+    <select id="getMapById" parameterType="Integer" resultType="java.util.Map">
+        select id,name,description,level,state,DATE_FORMAT(start_time ,"%Y-%m-%d") AS start_time,DATE_FORMAT(end_time ,"%Y-%m-%d") AS end_time,DATE_FORMAT(created ,"%Y-%m-%d") AS created from Project where id = #{id} limit 1
     </select>
 
     <select id="getRelation" parameterType="Project_User" resultType="String">
         select role from Project_User where user_id=#{user_id} and project_id=#{project_id} limit 1
     </select>
 
+    <select id="getMemberByProjectId" parameterType="int" resultType="java.util.Map">
+        select y.id,y.email,y.name,x.role from Project_User x,User y where project_id=#{project_id} and x.user_id=y.id
+    </select>
 
     <insert id="addProject" parameterType="User" useGeneratedKeys="true" keyProperty="id" >
         insert into Project(name,description,level,state,owner_id,start_time,end_time,created) values(#{name},#{description},#{level},#{state},#{owner_id},#{start_time},#{end_time},#{created})

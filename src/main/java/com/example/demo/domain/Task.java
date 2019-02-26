@@ -134,4 +134,21 @@ public class Task {
     public void setCreator_id(Integer creator_id) {
         this.creator_id = creator_id;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", level='" + level + '\'' +
+                ", state='" + state + '\'' +
+                ", owner_id=" + owner_id +
+                ", start_time=" + start_time +
+                ", end_time=" + end_time +
+                ", created=" + created +
+                ", project_id=" + project_id +
+                ", creator_id=" + creator_id +
+                '}';
+    }
 }

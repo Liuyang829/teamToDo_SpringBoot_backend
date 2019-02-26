@@ -19,7 +19,7 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public Task getById(Integer id) {
-        return null;
+        return taskMapper.getById(id);
     }
 
     @Override
