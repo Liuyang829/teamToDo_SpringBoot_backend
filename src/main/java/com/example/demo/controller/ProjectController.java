@@ -78,12 +78,13 @@ public class ProjectController extends Cors {
         Project_User temp = new Project_User(user.getId(), project_id);
 
         String role = projectService.getRelation(temp);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("project", project);
         if (role != null) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("project", project);
             List<Map> taskList = taskService.getByProjectId(project_id);
+            List<Map> memberList=projectService.getMemberByProjectId(project_id);
             map.put("tasks", taskList);
+            map.put("members",memberList);
             return ResultFactory.buildSuccessResult(map);
         }
         return ResultFactory.buildFailResult("无法操作");

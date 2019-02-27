@@ -86,7 +86,6 @@ public class InvitationController {
         String role=projectService.getRelation(temp);
         if(role!=null&&role.equals("creator")) {
             Invitation invitation=invitationService.getById(invitation_id);
-            System.out.println(invitation);
             if(invitation!=null &&invitation.getProject_id()==project_id){
                 invitationService.delInvitation(invitation_id);
                 return ResultFactory.buildSuccessResult(null);
