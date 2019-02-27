@@ -6,13 +6,19 @@
 
     <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
     resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
-    <select id="getByProjectId" parameterType="int" resultType="Invitation">
-        select * from Invitation where project_id = #{id}
+    <select id="getByProjectId" parameterType="int" resultType="java.util.Map">
+        select x.id,y.name,y.email,status,DATE_FORMAT(created ,"%Y-%m-%d") AS created from Invitation x,User y where project_id = #{id} and x.to_user_id=y.id
     </select>
 
     <select id="getByToUserId" parameterType="int" resultType="Invitation">
         select * from Invitation where to_user_id = #{to_user_id}
     </select>
+
+
+    <select id="existCheck" parameterType="Invitation" resultType="Invitation">
+        select * from Invitation where to_user_id = #{to_user_id} and project_id = #{project_id} and status="待处理" limit 1
+    </select>
+
 
     <select id="getById" parameterType="int" resultType="Invitation">
         select * from Invitation where id = #{id} limit 1
@@ -20,8 +26,7 @@
 
 
     <insert id="addInvitation" parameterType="Invitation" useGeneratedKeys="true" keyProperty="id">
-        insert into Invitation(project_id,from_user_id,to_user_id,status,Date created)
-        values(#{project_id},#{from_user_id},#{to_user_id},#{status},#{created})
+        insert into Invitation(project_id,from_user_id,to_user_id,status,created)values(#{project_id},#{from_user_id},#{to_user_id},#{status},#{created})
     </insert>
 
     <delete id="delInvitation" parameterType="int">

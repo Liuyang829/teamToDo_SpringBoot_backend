@@ -6,6 +6,7 @@ import com.example.demo.domain.Project_User;
 import com.example.demo.domain.User;
 import com.example.demo.service.InvitationService;
 import com.example.demo.service.ProjectService;
+import com.example.demo.service.UserService;
 import com.example.demo.utils.Result;
 import com.example.demo.utils.ResultFactory;
 import org.apache.shiro.SecurityUtils;
@@ -18,11 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/invitations")
 @CrossOrigin
 public class InvitationController {
+    @Autowired
+    UserService userService;
+
     @Autowired
     InvitationService invitationService;
 
@@ -34,25 +39,42 @@ public class InvitationController {
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
 
-        List<Invitation> invitationList=invitationService.getByProjectId(project_id);
+
+        List<Map> invitationList=invitationService.getByProjectId(project_id);
 
         return ResultFactory.buildSuccessResult(invitationList);
     }
 
     @RequestMapping(method= RequestMethod.POST)
-    public Result addInvitation(int project_id,int from_user_id,int to_user_id, String status){
+    public Result addInvitation(int project_id,String email){
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
 
-        Project_User temp=new Project_User(user.getId(),project_id);
-        String role=projectService.getRelation(temp);
-        if(role!=null ) {
-            Date currentDate = new java.sql.Date(System.currentTimeMillis());
-            Invitation invitation=new Invitation(project_id,from_user_id,to_user_id,status,currentDate);
-            invitationService.addInvitation(invitation);
-            return ResultFactory.buildSuccessResult(null);
+        User to_user=userService.getByEmail(email);
+
+        if(to_user!=null){
+            Project_User temp=new Project_User(user.getId(),project_id);
+            String role=projectService.getRelation(temp);
+            if(role!=null&&role.equals("creator")) {
+                //是否已在project内
+                Project_User t=new Project_User(to_user.getId(),project_id);
+                String join_check=projectService.getRelation(t);
+                if(join_check!=null){
+                    return ResultFactory.buildFailResult("该成员已在project中");
+                }
+                //是否已发送请求
+                Boolean exist_check= invitationService.existCheck(project_id,to_user.getId());
+                if(!exist_check){
+                    Date currentDate = new java.sql.Date(System.currentTimeMillis());
+                    Invitation invitation=new Invitation(project_id,user.getId(),to_user.getId(),"待处理",currentDate);
+                    invitationService.addInvitation(invitation);
+                    return ResultFactory.buildSuccessResult(null);
+                }
+                return ResultFactory.buildFailResult("邀请已发送，等待对方确认");
+            }
+            return ResultFactory.buildFailResult("无法操作");
         }
-        return ResultFactory.buildFailResult("无法操作");
+        return ResultFactory.buildFailResult("查无此人");
     }
 
     @RequestMapping(method= RequestMethod.DELETE)
@@ -62,10 +84,11 @@ public class InvitationController {
 
         Project_User temp=new Project_User(user.getId(),project_id);
         String role=projectService.getRelation(temp);
-        if(role!=null) {
+        if(role!=null&&role.equals("creator")) {
             Invitation invitation=invitationService.getById(invitation_id);
-            if(invitation!=null){
-                invitationService.delInvitataion(invitation_id);
+            System.out.println(invitation);
+            if(invitation!=null &&invitation.getProject_id()==project_id){
+                invitationService.delInvitation(invitation_id);
                 return ResultFactory.buildSuccessResult(null);
             }
             return ResultFactory.buildFailResult("无法操作");

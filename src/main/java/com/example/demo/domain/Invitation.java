@@ -74,4 +74,16 @@ public class Invitation {
     public void setCreated(Date created) {
         this.created = created;
     }
+
+    @Override
+    public String toString() {
+        return "Invitation{" +
+                "id=" + id +
+                ", project_id=" + project_id +
+                ", from_user_id=" + from_user_id +
+                ", to_user_id=" + to_user_id +
+                ", status='" + status + '\'' +
+                ", created=" + created +
+                '}';
+    }
 }
