@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Invitation;
-import com.example.demo.domain.Project;
 import com.example.demo.domain.Project_User;
 import com.example.demo.domain.User;
 import com.example.demo.service.InvitationService;
@@ -91,7 +90,6 @@ public class InvitationController {
                 return ResultFactory.buildSuccessResult(null);
             }
             return ResultFactory.buildFailResult("无法操作");
-
         }
         return ResultFactory.buildFailResult("无法操作");
     }
@@ -123,6 +121,18 @@ public class InvitationController {
         return ResultFactory.buildFailResult("无法操作");
     }
 
+    @RequestMapping(method = RequestMethod.DELETE,value="/received")
+    public  Result refuseInvitation(int invitation_id){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
 
+        Invitation invitation=invitationService.getById(invitation_id);
+        if(invitation!=null&&user.getId()==invitation.getTo_user_id()&&invitation.getStatus().equals("待处理")) {
+            invitation.setStatus("拒绝");
+            invitationService.updateStatus(invitation);
+            return ResultFactory.buildSuccessResult(null);
+        }
+        return ResultFactory.buildFailResult("无法操作");
+    }
 
 }
