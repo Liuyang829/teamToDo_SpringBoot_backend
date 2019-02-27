@@ -7,7 +7,7 @@ public class Invitation {
     Integer project_id;
     Integer from_user_id;
     Integer to_user_id;
-    String status;//已同意、拒绝、待处理
+    String status;//同意、拒绝、待处理
     Date created;
 
     public Invitation(Integer id, Integer project_id, Integer from_user_id, Integer to_user_id, String status, Date created) {

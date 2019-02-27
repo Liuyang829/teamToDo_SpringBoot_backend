@@ -98,11 +98,11 @@ public class InvitationController {
 
 
     @RequestMapping(method= RequestMethod.GET,value = "/received")
-    public Result receivedInvitation(int to_user_id){
+    public Result receivedInvitation(){
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
 
-        List<Invitation> invitationList=invitationService.getByToUserId(to_user_id);
+        List<Map> invitationList=invitationService.getByToUserId(user.getId());
 
         return ResultFactory.buildSuccessResult(invitationList);
     }
@@ -113,9 +113,9 @@ public class InvitationController {
         User user = (User) subject.getPrincipal();
 
         Invitation invitation=invitationService.getById(invitation_id);
-        if(invitation!=null&&user.getId()==invitation.getTo_user_id()){
-            //...
-            //...
+        if(invitation!=null&&user.getId()==invitation.getTo_user_id()&&invitation.getStatus().equals("待处理")){
+            invitation.setStatus("同意");
+            invitationService.updateStatus(invitation);
             Project_User project_user=new Project_User(user.getId(),invitation.getProject_id(),"member");
             projectService.addRelation(project_user);
             return ResultFactory.buildSuccessResult(null);

@@ -19,8 +19,8 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public List<Invitation> getByToUserId(Integer to_user_id) {
-        return null;
+    public List<Map> getByToUserId(Integer to_user_id) {
+        return invitationMapper.getByToUserId(to_user_id);
     }
 
     @Override
@@ -38,10 +38,10 @@ public class InvitationServiceImpl implements InvitationService {
         invitationMapper.addInvitation(invitation);
     }
 
-//    @Override
-//    public void updateInvitation(Invitation invitation) {
-//
-//    }
+    @Override
+    public void updateStatus(Invitation invitation) {
+        invitationMapper.updateStatus(invitation);
+    }
 
     @Override
     public void delInvitation(Integer id) {

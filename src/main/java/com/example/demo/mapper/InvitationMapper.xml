@@ -10,8 +10,9 @@
         select x.id,y.name,y.email,status,DATE_FORMAT(created ,"%Y-%m-%d") AS created from Invitation x,User y where project_id = #{id} and x.to_user_id=y.id
     </select>
 
-    <select id="getByToUserId" parameterType="int" resultType="Invitation">
-        select * from Invitation where to_user_id = #{to_user_id}
+    <select id="getByToUserId" parameterType="int" resultType="java.util.Map">
+        select x.id,y.name AS inviter,z.name as project_name,DATE_FORMAT(x.created ,"%Y-%m-%d") AS created from Invitation x,User y,Project z
+        where to_user_id = #{to_user_id} and x.to_user_id=y.id and x.project_id=z.id and status="待处理"
     </select>
 
 
@@ -32,6 +33,10 @@
     <delete id="delInvitation" parameterType="int">
         delete from Invitation where id = #{id}
     </delete>
+
+    <update id="updateStatus" parameterType="Invitation">
+        update Invitation set status=#{status} where id = #{id}
+    </update>
 
 
 </mapper>
