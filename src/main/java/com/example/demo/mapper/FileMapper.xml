@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.FileMapper">
+
+    <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
+    resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
+    <select id="getByProjectId" parameterType="int" resultType="java.util.Map">
+        select x.id,original_name,y.name as creator_name,DATE_FORMAT(delete_time ,"%Y-%m-%d") AS delete_time,isDeleted,DATE_FORMAT(create_time ,"%Y-%m-%d") AS create_time from File x,User y
+        where project_id = #{id} and x.creator_id=y.id
+    </select>
+
+    <select id="getById" parameterType="int" resultType="FileLog">
+        select * from File where id = #{id} limit 1
+    </select>
+
+
+    <insert id="addFile" parameterType="FileLog" useGeneratedKeys="true" keyProperty="id">
+        insert into File(project_id,creator_id,original_name,path,isDeleted,create_time)
+        values(#{project_id},#{creator_id},#{original_name},#{path},false,#{create_time} )
+    </insert>
+
+    <update id="delFile" parameterType="FileLog">
+        update File set isDeleted=true,delete_time=#{delete_time} where id = #{id}
+    </update>
+
+    <delete id="delFromBin" parameterType="int">
+        delete from File where id = #{id}
+    </delete>
+
+    <update id="recovery" parameterType="int">
+        update File set isDeleted=false ,delete_time=null where id = #{id}
+    </update>
+
+
+</mapper>
