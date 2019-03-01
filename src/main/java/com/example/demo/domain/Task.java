@@ -20,12 +20,11 @@ public class Task {
     private Integer project_id;
     private Integer creator_id;
 
-    public Task(String name, String description, String level, String state, Integer owner_id, Date start_time, Date end_time, Date created, Integer project_id, Integer creator_id) {
+    public Task(String name, String description, String level, String state, Date start_time, Date end_time, Date created, Integer project_id, Integer creator_id) {
         this.name = name;
         this.description = description;
         this.level = level;
         this.state = state;
-        this.owner_id = owner_id;
         this.start_time = start_time;
         this.end_time = end_time;
         this.created = created;

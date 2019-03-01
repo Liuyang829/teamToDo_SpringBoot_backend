@@ -91,24 +91,24 @@ public class ProjectController extends Cors {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/tasks")
-    public Result addTask(int project_id, String name, String description, String level, String state, Date start_time, Date end_time, int owner_id) {
+    public Result addTask(int project_id, String name, String description, String level, Date start_time, Date end_time) {
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
 
         Project_User temp = new Project_User(user.getId(), project_id);
         String role = projectService.getRelation(temp);
 
-        Project_User owner = new Project_User(owner_id, project_id);
-        String owner_role = projectService.getRelation(owner);
+//        Project_User owner = new Project_User(owner_id, project_id);
+//        String owner_role = projectService.getRelation(owner);
 
 
-        if (owner_role == null) {
-            return ResultFactory.buildFailResult("成员不属于该project");
-        }
+//        if (owner_role == null) {
+//            return ResultFactory.buildFailResult("成员不属于该project");
+//        }
         if (role != null && role.equals("creator")) {
             Date currentDate = new java.sql.Date(System.currentTimeMillis());
 
-            Task task = new Task(name, description, level, state, owner_id, start_time, end_time, currentDate, project_id, user.getId());
+            Task task = new Task(name, description, level, "待分配", start_time, end_time, currentDate, project_id, user.getId());
             taskService.addTask(task);
             return ResultFactory.buildSuccessResult(null);
         }
@@ -147,4 +147,28 @@ public class ProjectController extends Cors {
         }
         return ResultFactory.buildFailResult("无法操作");
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/members")
+    public Result assignTask(int task_id,int project_id,int owner_id){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+
+        Project_User creator = new Project_User(user.getId(), project_id);
+        String creator_role = projectService.getRelation(creator);
+        if (creator_role != null && creator_role.equals("creator")) {
+            Project_User owner = new Project_User(owner_id, project_id);
+            String owner_role = projectService.getRelation(owner);
+            if (owner_role == null) {
+                return ResultFactory.buildFailResult("成员不属于该project");
+            }
+            Task task=taskService.getById(task_id);
+            if(task!=null&task.getProject_id()==project_id){
+                taskService.assignTask(task_id,owner_id);
+                return ResultFactory.buildSuccessResult(null);
+            }
+            return ResultFactory.buildFailResult("无法操作");
+        }
+        return ResultFactory.buildFailResult("无法操作");
+    }
+
 }

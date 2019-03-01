@@ -32,4 +32,9 @@ public class TaskServiceImpl implements TaskService{
     public void delTask(Integer task_id) {
         taskMapper.delTask(task_id);
     }
+
+    @Override
+    public void assignTask(Integer task_id, Integer owner_id) {
+        taskMapper.assignTask(task_id,owner_id);
+    }
 }

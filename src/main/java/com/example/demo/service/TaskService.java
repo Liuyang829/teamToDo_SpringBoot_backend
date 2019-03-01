@@ -10,4 +10,5 @@ public interface TaskService {
     Task getById(Integer id);
     void addTask(Task task);
     void delTask(Integer task_id);
+    void assignTask(Integer task_id,Integer owner_id);
 }

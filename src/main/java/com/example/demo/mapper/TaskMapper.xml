@@ -25,5 +25,9 @@
         delete from Task where id = #{id}
     </delete>
 
+    <update id="assignTask" parameterType="Integer">
+        update Task set owner_id=#{owner_id} where id=#{task_id}
+    </update>
+
 
 </mapper>
