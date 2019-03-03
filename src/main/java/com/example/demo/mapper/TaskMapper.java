@@ -12,4 +12,5 @@ public interface TaskMapper {
     void delTask(Integer task_id);
     void updateTask(Task task);
     void assignTask(Integer task_id,Integer owner_id);
+    void initTask(Integer owner_id,Integer project_id);
 }

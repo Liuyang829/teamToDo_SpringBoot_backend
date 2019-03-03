@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.domain.Project;
 import com.example.demo.domain.Project_User;
 import com.example.demo.mapper.ProjectMapper;
+import com.example.demo.mapper.TaskMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ import java.util.Map;
 public class ProjectServiceImpl implements ProjectService {
     @Autowired
     ProjectMapper projectMapper;
+
+    @Autowired
+    TaskMapper taskMapper;
 
     @Override
     public List<Map> getByOwnerId(Integer owner_id) {
@@ -63,5 +67,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void updateProject(Project project) {
         projectMapper.updateProject(project);
+    }
+
+    @Override
+    public void kick(Integer member_id, Integer project_id) {
+        projectMapper.delRelation(member_id,project_id);
+        taskMapper.initTask(member_id,project_id);
     }
 }

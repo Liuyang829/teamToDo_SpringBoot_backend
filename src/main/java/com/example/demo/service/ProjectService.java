@@ -17,4 +17,5 @@ public interface ProjectService {
     void addRelation(Project_User project_user);
     void deleteProject(Integer id);
     List<Map> getMemberByProjectId(Integer project_id);
+    void kick(Integer member_id,Integer project_id);
 }

@@ -44,8 +44,12 @@
         state=#{state},start_time=#{start_time},end_time=#{end_time} where id=#{id}
     </update>
 
-    <delete id="deleteProject" parameterType="Integer">
+    <delete id="deleteProject" parameterType="int">
         delete from Project where id = #{id}
+    </delete>
+
+    <delete id="delRelation" parameterType="int">
+        delete from Project_User where user_id = #{user_id} and project_id=#{project_id}
     </delete>
 
 </mapper>

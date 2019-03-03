@@ -13,6 +13,7 @@ public interface ProjectMapper {
     Project getById(Integer id);
     Map getMapById(Integer id);
     String getRelation(Project_User project_user);
+    void delRelation(Integer user_id,Integer project_id);
     Integer addProject(Project project);
     void updateProject(Project project);
     void addRelation(Project_User project_user);

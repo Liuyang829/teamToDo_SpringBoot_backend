@@ -35,5 +35,12 @@
         state=#{state},start_time=#{start_time},end_time=#{end_time} where id=#{id}
     </update>
 
+    <update id="initTask" parameterType="int">
+        update Task set
+        state="待分配",owner_id=null
+        where project_id=#{project_id} and owner_id=#{owner_id}
+    </update>
+
+
 
 </mapper>

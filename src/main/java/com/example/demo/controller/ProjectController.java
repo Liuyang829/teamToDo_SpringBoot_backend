@@ -219,6 +219,24 @@ public class ProjectController extends Cors {
         return ResultFactory.buildFailResult("无法操作");
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "/members")
+    public Result kickMember(int member_id,int project_id){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+
+        Project_User temp = new Project_User(user.getId(), project_id);
+        String role = projectService.getRelation(temp);
+
+        if (role != null && role.equals("creator")&&member_id!=user.getId()) {
+            projectService.kick(member_id,project_id);
+            return ResultFactory.buildSuccessResult(null);
+        }
+
+
+        return ResultFactory.buildFailResult("无法操作");
+    }
+
+
 
 
 
