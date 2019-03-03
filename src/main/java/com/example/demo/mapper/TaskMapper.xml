@@ -27,7 +27,7 @@
     </delete>
 
     <update id="assignTask" parameterType="Integer">
-        update Task set owner_id=#{owner_id} where id=#{task_id}
+        update Task set owner_id=#{owner_id} state="进行中" where id=#{task_id}
     </update>
 
     <update id="updateTask" parameterType="Task">
