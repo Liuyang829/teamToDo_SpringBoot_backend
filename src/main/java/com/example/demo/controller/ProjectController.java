@@ -58,7 +58,7 @@ public class ProjectController extends Cors {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(value="/upProject",method = RequestMethod.PUT)
     public Result upProject(String name, String description, String level, String state, Date start_time, Date end_time,int project_id) {
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
