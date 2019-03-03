@@ -54,6 +54,23 @@ public class ProjectController extends Cors {
         return ResultFactory.buildSuccessResult(null);
     }
 
+    @RequestMapping(method = RequestMethod.PUT)
+    public Result upProject(String name, String description, String level, String state, Date start_time, Date end_time,int project_id) {
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+
+        Project_User temp = new Project_User(user.getId(), project_id);
+        String role = projectService.getRelation(temp);
+
+        if (role != null && role.equals("creator")) {
+            Project project = new Project(project_id,name, description, level, state, start_time, end_time);
+            System.out.println(project.toString());
+            projectService.updateProject(project);
+            return ResultFactory.buildSuccessResult(null);
+        }
+        return ResultFactory.buildFailResult("无法操作");
+    }
+
     @RequestMapping(method = RequestMethod.DELETE)
     public Result delProject(int project_id) {
         Subject subject = SecurityUtils.getSubject();
@@ -98,13 +115,6 @@ public class ProjectController extends Cors {
         Project_User temp = new Project_User(user.getId(), project_id);
         String role = projectService.getRelation(temp);
 
-//        Project_User owner = new Project_User(owner_id, project_id);
-//        String owner_role = projectService.getRelation(owner);
-
-
-//        if (owner_role == null) {
-//            return ResultFactory.buildFailResult("成员不属于该project");
-//        }
         if (role != null && role.equals("creator")) {
             Date currentDate = new java.sql.Date(System.currentTimeMillis());
 

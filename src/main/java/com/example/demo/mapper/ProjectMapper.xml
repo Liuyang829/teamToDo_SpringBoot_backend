@@ -34,6 +34,11 @@
         insert into Project_User(user_id,project_id,role) values(#{user_id},#{project_id},#{role})
     </insert>
 
+    <update id="updateProject" parameterType="Project">
+        update Project set name=#{name},description=#{description},level =#{level},
+        state=#{state},start_time=#{start_time},end_time=#{end_time} where id=#{id}
+    </update>
+
     <delete id="deleteProject" parameterType="Integer">
         delete from Project where id = #{id}
     </delete>

@@ -54,4 +54,9 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Map> getMemberByProjectId(Integer project_id) {
         return projectMapper.getMemberByProjectId(project_id);
     }
+
+    @Override
+    public void updateProject(Project project) {
+        projectMapper.updateProject(project);
+    }
 }

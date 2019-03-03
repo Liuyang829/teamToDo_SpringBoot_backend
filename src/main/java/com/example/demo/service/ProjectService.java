@@ -12,6 +12,7 @@ public interface ProjectService {
     Map getMapById(Integer id);
     String getRelation(Project_User project_user);
     Integer addProject(Project project);//返回主键
+    void updateProject(Project project);
     void addRelation(Project_User project_user);
     void deleteProject(Integer id);
     List<Map> getMemberByProjectId(Integer project_id);

@@ -43,6 +43,16 @@ public class Project {
         this.created = created;
     }
 
+    public Project(Integer id,String name, String description, String level, String state, Date start_time, Date end_time) {
+        this.id=id;
+        this.name = name;
+        this.description = description;
+        this.level = level;
+        this.state = state;
+        this.start_time = start_time;
+        this.end_time = end_time;
+    }
+
     public Project(String name, String description, String level, String state, Date start_time, Date end_time) {
         this.name = name;
         this.description = description;
