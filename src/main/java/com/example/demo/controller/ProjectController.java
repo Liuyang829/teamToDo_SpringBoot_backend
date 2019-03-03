@@ -64,7 +64,6 @@ public class ProjectController extends Cors {
 
         if (role != null && role.equals("creator")) {
             Project project = new Project(project_id,name, description, level, state, start_time, end_time);
-            System.out.println(project.toString());
             projectService.updateProject(project);
             return ResultFactory.buildSuccessResult(null);
         }
@@ -145,6 +144,42 @@ public class ProjectController extends Cors {
         return ResultFactory.buildFailResult("无法操作");
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/tasks")
+    public Result upTask(int project_id, int task_id,String name, String description, String level, String state, Date start_time, Date end_time) {
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+
+        Project_User temp = new Project_User(user.getId(), project_id);
+        String role = projectService.getRelation(temp);
+
+        if (role != null) {
+            Task task = taskService.getById(task_id);
+            if (task != null && task.getProject_id() == project_id) {
+                if(role.equals("creator")){
+                    task.setName(name);
+                    task.setDescription(description);
+                    task.setLevel(level);
+                    task.setState(state);
+                    task.setStart_time(start_time);
+                    task.setEnd_time(end_time);
+                    taskService.updateTask(task);
+                }else if (task.getOwner_id()==user.getId()){
+                    task.setState(state);
+                    task.setDescription(description);
+                    taskService.updateTask(task);
+                }else{
+                    return ResultFactory.buildFailResult("无法操作");
+                }
+                return ResultFactory.buildSuccessResult(null);
+            } else {
+                return ResultFactory.buildFailResult("无法操作");
+            }
+
+        }
+        return ResultFactory.buildFailResult("无法操作");
+    }
+
+
     @RequestMapping(method = RequestMethod.GET, value = "/members")
     public Result getMembers(int project_id) {
         Subject subject = SecurityUtils.getSubject();
@@ -180,5 +215,9 @@ public class ProjectController extends Cors {
         }
         return ResultFactory.buildFailResult("无法操作");
     }
+
+
+
+
 
 }

@@ -10,5 +10,6 @@ public interface TaskMapper {
     Task getById(Integer id);
     void addTask(Task task);
     void delTask(Integer task_id);
+    void updateTask(Task task);
     void assignTask(Integer task_id,Integer owner_id);
 }

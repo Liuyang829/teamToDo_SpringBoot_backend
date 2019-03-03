@@ -29,5 +29,10 @@
         update Task set owner_id=#{owner_id} where id=#{task_id}
     </update>
 
+    <update id="updateTask" parameterType="Task">
+        update Task set name=#{name},description=#{description},level =#{level},
+        state=#{state},start_time=#{start_time},end_time=#{end_time} where id=#{id}
+    </update>
+
 
 </mapper>

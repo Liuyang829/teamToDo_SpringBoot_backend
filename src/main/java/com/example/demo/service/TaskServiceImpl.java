@@ -34,6 +34,11 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
+    public void updateTask(Task task) {
+        taskMapper.updateTask(task);
+    }
+
+    @Override
     public void assignTask(Integer task_id, Integer owner_id) {
         taskMapper.assignTask(task_id,owner_id);
     }
