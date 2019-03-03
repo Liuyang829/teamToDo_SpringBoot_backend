@@ -14,6 +14,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +34,11 @@ public class ProjectController extends Cors {
     public Result getProject() {
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
-        List<Map> projectList = projectService.getByOwnerId(user.getId());
-        return ResultFactory.buildSuccessResult(projectList);
+        List<Map> myprojectList = projectService.getByUserId(user.getId());
+
+
+
+        return ResultFactory.buildSuccessResult(myprojectList);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -92,7 +96,6 @@ public class ProjectController extends Cors {
 
         Map project = projectService.getMapById(project_id);
         Project_User temp = new Project_User(user.getId(), project_id);
-
         String role = projectService.getRelation(temp);
         if (role != null) {
             Map<String, Object> map = new HashMap<>();

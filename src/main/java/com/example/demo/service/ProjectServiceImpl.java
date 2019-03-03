@@ -31,6 +31,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public List<Map> getByUserId(Integer user_id) {
+        return projectMapper.getByUserId(user_id);
+    }
+
+    @Override
     public String getRelation(Project_User project_user) {
         return projectMapper.getRelation(project_user);
     }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 public interface ProjectMapper {
     List<Map> getByOwnerId(Integer owner_id);
+    List<Map> getByUserId(Integer user_id);
     Project getById(Integer id);
     Map getMapById(Integer id);
     String getRelation(Project_User project_user);
