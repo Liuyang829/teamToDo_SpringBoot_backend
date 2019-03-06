@@ -17,6 +17,20 @@ public class UserServiceImpl implements UserService{
     @Override
     public void register(User user) {
         userMapper.register(user);
-        return;
+    }
+
+    @Override
+    public String getVerifyCode(String email) {
+        return userMapper.getVerifyCode(email);
+    }
+
+    @Override
+    public void addVerifyCode(String email, String code) {
+        userMapper.addVerifyCode(email,code);
+    }
+
+    @Override
+    public void updateVerifyCode(String email, String code) {
+        userMapper.updateVerifyCode(email,code);
     }
 }

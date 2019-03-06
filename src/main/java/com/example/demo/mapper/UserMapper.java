@@ -3,6 +3,9 @@ package com.example.demo.mapper;
 import com.example.demo.domain.User;
 
 public interface UserMapper {
-    public User getByEmail(String email);
-    public void register(User user);
+    User getByEmail(String email);
+    void register(User user);
+    String getVerifyCode(String email);
+    void addVerifyCode(String email,String code);
+    void updateVerifyCode(String email,String code);
 }

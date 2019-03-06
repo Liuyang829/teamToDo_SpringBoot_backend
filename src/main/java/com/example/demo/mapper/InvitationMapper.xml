@@ -12,7 +12,7 @@
 
     <select id="getByToUserId" parameterType="int" resultType="java.util.Map">
         select x.id,y.name AS inviter,z.name as project_name,DATE_FORMAT(x.created ,"%Y-%m-%d") AS created from Invitation x,User y,Project z
-        where to_user_id = #{to_user_id} and x.to_user_id=y.id and x.project_id=z.id and status="待处理"
+        where to_user_id = #{to_user_id} and x.from_user_id=y.id and x.project_id=z.id and status="待处理"
     </select>
 
 

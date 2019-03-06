@@ -2,8 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.cors.Cors;
 import com.example.demo.domain.User;
+import com.example.demo.mail.MailModule;
+import com.example.demo.queue.Sender;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.Result;
+import com.example.demo.utils.GetRandomString;
 import com.example.demo.utils.ResultFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -19,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin
 public class UserController extends Cors {
+    @Autowired
+    private Sender sender;
+
     @RequestMapping("/hello")
     public Result hello() {
         Subject subject = SecurityUtils.getSubject();
@@ -28,6 +34,7 @@ public class UserController extends Cors {
         String message= "hello test "+user.getName();
         return ResultFactory.buildSuccessResult(message);
     }
+
 
     @RequestMapping("/toLogin")
     public Result toLogin() {
@@ -64,14 +71,32 @@ public class UserController extends Cors {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.POST,value ="/register")
-    public Result register(String email,String password,String name){
+    public Result register(String email,String password,String name,String code){
         User user=userService.getByEmail(email);
         if(user!=null){
             return ResultFactory.buildFailResult("邮箱已被注册");
         }else {
-            user=new User(email,password,name);
+
+            if(code!=null&&code.equals(userService.getVerifyCode(email))){
+                user=new User(email,password,name);
+                userService.register(user);
+            }else{
+                return ResultFactory.buildFailResult("验证码错误！");
+            }
         }
-        userService.register(user);
         return ResultFactory.buildSuccessResult(null);
     }
+
+
+    @RequestMapping(method = RequestMethod.POST,value ="/code")
+    public Result verify(String email){
+        User user=userService.getByEmail(email);
+        if(user!=null){
+            return ResultFactory.buildFailResult("邮箱已被注册");
+        }else {
+            sender.send(email);
+            return ResultFactory.buildSuccessResult(null);
+        }
+    }
+
 }

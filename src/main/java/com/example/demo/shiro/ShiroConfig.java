@@ -31,6 +31,8 @@ public class ShiroConfig {
          */
         Map<String, String> filerMap = new LinkedHashMap<>();
         filerMap.put("/login", "anon");
+        filerMap.put("/code", "anon");
+        filerMap.put("/register","anon");
 
         filerMap.put("/hello", "perms[admin]");
         filerMap.put("/*","authc");

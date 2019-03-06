@@ -13,7 +13,7 @@
     <select id="getByUserId" parameterType="Integer" resultType="java.util.Map">
         select y.id,name,description,level,state,DATE_FORMAT(start_time ,"%Y-%m-%d") AS start_time,DATE_FORMAT(end_time ,"%Y-%m-%d") AS end_time,DATE_FORMAT(created ,"%Y-%m-%d") AS created,role
         from Project_User x,Project y
-        where user_id = #{user_id} and x.project_id=y.id and y.owner_id=#{user_id}
+        where user_id = #{user_id} and x.project_id=y.id
     </select>
 
     <select id="getById" parameterType="Integer" resultType="Project">

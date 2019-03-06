@@ -37,7 +37,6 @@ public class ProjectController extends Cors {
         List<Map> myprojectList = projectService.getByUserId(user.getId());
 
 
-
         return ResultFactory.buildSuccessResult(myprojectList);
     }
 

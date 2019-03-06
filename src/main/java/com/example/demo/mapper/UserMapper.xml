@@ -12,9 +12,20 @@
 
 
     <insert id="register" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        insert into User(name,password,email,role) values(#{name},#{password},#{email},#{role})
+        insert into User(name,password,email,role)
+        values(#{name},#{password},#{email},#{role})
     </insert>
 
+    <select id="getVerifyCode" parameterType="String" resultType="String">
+        select code from VerifyCode where email=#{email}
+    </select>
 
+    <insert id="addVerifyCode" parameterType="String" useGeneratedKeys="true" keyProperty="id">
+        insert into VerifyCode(email,code) values(#{email},#{code})
+    </insert>
+
+    <update id="updateVerifyCode" parameterType="String">
+        update VerifyCode set code=#{code} where email=#{email}
+    </update>
 
 </mapper>
