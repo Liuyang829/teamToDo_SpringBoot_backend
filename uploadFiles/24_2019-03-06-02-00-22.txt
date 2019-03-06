@@ -1,0 +1,402 @@
+#include <reg52.h>		//头文件
+#include <intrins.h>
+#define uchar unsigned char
+#define uint  unsigned int
+#define delayNOP(); {_nop_();_nop_();_nop_();_nop_();};
+/*TS12864A-3 端口定义*/
+sbit LCD_RS  =  P0^4;            //寄存器选择输入 
+sbit LCD_RW  =  P0^3;            //液晶读/写控制
+sbit LCD_EN  =  P0^2;            //液晶使能控制
+sbit LCD_PSB =  P0^1;            //串/并方式控制
+sbit rst = P0^0;
+
+
+
+/*显示内容数组定义*/
+uchar dis[]  = ("Welcome");
+uchar code dis1[] = ("Welcome       to");
+uchar code dis2[] = {"单词记忆  测试器"};
+uchar code dis3[] = {" "};
+uchar code dis4[] = {"Start       Quit"};
+uchar code dis5[] = {" "};
+uchar code dis6[] = {"->: 青蛙"};
+uchar code dis7[] = {"->: "};
+uchar code dis8[] = {"Check Next  Quit"};
+
+void delay0(uchar x);  //x*0.14MS
+void lcd_pos(uchar X,uchar Y);  //确定显示位置
+/*******************************************************************/
+/*                                                                 */
+/*  延时函数                                                       */
+/*                                                                 */
+/*******************************************************************/
+void delay(int ms)
+{
+    while(ms--)
+	{
+      uchar i;
+	  for(i=0;i<250;i++)  
+	   {
+	    _nop_();			   
+		_nop_();
+		_nop_();
+		_nop_();
+	   }
+	}
+}
+
+void delaymss(int i)//延时1毫秒函数
+{
+int count=0;
+TMOD=0x01;
+TR0=1;
+TH0=0xFC;
+TL0=0x65;
+while((i-count)!=0)
+{
+if(TF0==1)
+{
+count++;
+TF0=0;
+TH0=0xFC;
+TL0=0x65;
+}
+}
+}
+
+
+/******************************************************************/
+/*                   键盘扫描函数                                 */
+/******************************************************************/
+
+
+unsigned char keyscan()//键盘扫描函数
+{
+
+char hang,lie,key;
+
+char code table[8][8]={									  //key最后取的值，方便比对
+                       {'0','0','0','0','q','r','s','t'},
+                  	   {'0','0','0','0','u','v','w','x'},
+                  	   {'0','0','0','0','Y','Z','1','2'},
+                  	   {'0','0','0','0','3','4','5','6'},
+				       {'a','b','c','d'},
+				       {'e','f','g','h'},
+				       {'i','j','k','l'},
+				       {'m','n','o','p'},
+				      };
+
+
+if(P1!=0xFF||P3!=0)//判断时候有按下
+ delaymss(5);	   //防止误触，
+ if(P1!=0xFF||P3!=0)//再次判断
+ {	  
+
+
+  switch(P1&0xFF)//行取低8位（因为只有8个口，8行）
+  {
+  case 0xFE:hang=7;break;//通过与来判断哪行有按键按下（低电平）
+  case 0xFD:hang=6;break;
+  case 0xFB:hang=5;break;
+  case 0xF7:hang=4;break;
+  case 0xEF:hang=3;break;
+  case 0xDF:hang=2;break;
+  case 0xBF:hang=1;break;
+  case 0x7F:hang=0;break;
+  }
+  P1=0x00;//行取反
+  P3=0xFF;//列取反，为下一步判断列做准备
+  switch(P3&0xFF)//列去低8位（因为只有8列）
+  {
+  case 0xFE:lie=7;break;//通过与来判断哪列有按键按下（低电平）
+  case 0xFD:lie=6;break;
+  case 0xFB:lie=5;break;
+  case 0xF7:lie=4;break;
+  case 0xEF:lie=3;break;
+  case 0xDF:lie=2;break;
+  case 0xBF:lie=1;break;
+  case 0x7F:lie=0;break;
+  }
+  P1=0xFF;//复位，准备重新判断
+  P3=0;//同理复位					 
+  while(P1!=0xFF||P3!=0)//死循环，不松手就死循环  
+  {
+  key= table[hang][lie];
+  }
+ }
+ else
+ {key ='_';}
+
+ return(key);//松手后跳出死循环
+}
+
+
+		
+/*******************************************************************/
+/*                                                                 */
+/*检查LCD忙状态                                                    */
+/*lcd_busy为1时，忙，等待。lcd-busy为0时,闲，可写指令与数据。      */
+/*                                                                 */
+/*******************************************************************/
+bit lcd_busy()
+ {                          
+    bit result;
+    LCD_RS = 0;
+    LCD_RW = 1;
+    LCD_EN = 1;
+    delayNOP();
+    result = (bit)(P2&0x80);
+    LCD_EN = 0;
+    return(result); 
+ }
+/*******************************************************************/
+/*                                                                 */
+/*写指令数据到LCD                                                  */
+/*RS=L，RW=L，E=高脉冲，D0-D7=指令码。                             */
+/*                                                                 */
+/*******************************************************************/
+void lcd_wcmd(uchar cmd)
+{                          
+   while(lcd_busy());
+    LCD_RS = 0;
+    LCD_RW = 0;
+    LCD_EN = 0;
+    _nop_();
+    _nop_(); 
+    P2 = cmd;
+    delayNOP();
+    LCD_EN = 1;
+    delayNOP();
+    LCD_EN = 0;  
+}
+/*******************************************************************/
+/*                                                                 */
+/*写显示数据到LCD                                                  */
+/*RS=H，RW=L，E=高脉冲，D0-D7=数据。                               */
+/*                                                                 */
+/*******************************************************************/
+void lcd_wdat(uchar dat)
+{                          
+   while(lcd_busy());
+    LCD_RS = 1;
+    LCD_RW = 0;
+    LCD_EN = 0;
+    P2 = dat;
+    delayNOP();
+    LCD_EN = 1;
+    delayNOP();
+    LCD_EN = 0; 
+}
+/*******************************************************************/
+/*                                                                 */
+/*  LCD初始化设定                                                  */
+/*                                                                 */
+/*******************************************************************/
+void lcd_init()
+{ 
+
+    LCD_PSB = 1;         //并口方式
+    rst=1;
+    lcd_wcmd(0x30);      //基本指令操作
+    delay(5);
+    lcd_wcmd(0x0C);      //显示开，关光标
+    delay(5);
+    lcd_wcmd(0x01);      //清除LCD的显示内容
+    delay(5);
+}
+/*********************************************************/
+/*														 */
+/* 主程序           									 */
+/*                                                       */
+/*********************************************************/
+void  main()
+ {
+   
+    uchar i=0;
+	char keyw;
+	int count=2;
+    lcd_init();                //初始化LCD             
+    P3=0x00;//键盘初始化
+    P1=0xff;
+
+
+
+	while(1)
+	{
+    keyw=keyscan();
+
+
+
+
+// ！！！！！！输入单词界面！！！！！！//
+
+
+
+
+	if(keyw=='1')
+	{
+	lcd_init();                //初始化LCD             
+    lcd_pos(0,0);             //设置显示位置为第一行的第1个字符
+	i = 0;
+	while(dis6[i] != '\0')
+	{                         
+       lcd_wdat(dis6[i]);//青蛙
+       i++;
+    }
+	lcd_pos(1,0);             //设置显示位置为第二行的第1个字符
+    i = 0;
+	while(dis7[i] != '\0')
+	{                         
+       lcd_wdat(dis7[i]);//输入
+       i++;
+    }
+	lcd_pos(3,0);             //设置显示位置为第四行的第1个字符
+    i = 0;
+		while(dis8[i] != '\0')
+	{                         
+       lcd_wdat(dis8[i]);//菜单
+       i++;
+    }
+	keyw=keyscan();
+
+
+	while(keyw!='1'||keyw!='2'||keyw!='3')
+	{
+	 
+	 keyw=keyscan();
+	 lcd_pos(1,count);             //设置显示位置为第二行的第count个字符
+	 keyw=keyscan();
+	 switch(keyw)//判断到底按下了哪个字母
+	 {
+	 case 'a': dis[0] = {"a"};break;
+	 case 'b': dis[0] = {"b"};break;
+	 case 'c': dis[0] = {"c"};break;
+	 case 'd': dis[0] = {"d"};break;
+	 case 'e': dis[0] = {"e"};break;
+	 case 'f': dis[0] = {"f"};break;
+	 case 'g': dis[0] = {"g"};break;
+	 case 'h': dis[0] = {"h"};break;
+	 case 'i': dis[0] = {"i"};break;
+	 case 'j': dis[0] = {"j"};break;
+	 case 'k': dis[0] = {"k"};break;
+	 case 'l': dis[0] = {"l"};break;
+	 case 'm': dis[0] = {"m"};break;
+	 case 'n': dis[0] = {"n"};break;
+	 case 'o': dis[0] = {"o"};break;
+	 case 'p': dis[0] = {"p"};break;
+	 case 'q': dis[0] = {"q"};break;
+	 case 'r': dis[0] = {"r"};break;
+	 case 's': dis[0] = {"s"};break;
+	 case 't': dis[0] = {"t"};break;
+	 case 'u': dis[0] = {"u"};break;
+	 case 'v': dis[0] = {"v"};break;
+	 case 'w': dis[0] = {"w"};break;
+	 case 'x': dis[0] = {"x"};break;
+	 case 'y': dis[0] = {"y"};break;
+	 case 'z': dis[0] = {"z"};break;
+	 default:  count--;break;
+	 }    
+     lcd_wdat(dis[0]);//输入字母
+	 count++;
+
+	}
+
+
+
+	delaymss(5000);
+	}
+
+
+// ！！！！！！初始化界面！！！！！！//
+
+	else
+	{
+	lcd_init();                //初始化LCD             
+    lcd_pos(0,0);             //设置显示位置为第一行的第1个字符
+	i = 0;
+    while(dis1[i] != '\0')
+     {                         //显示字符
+       lcd_wdat(dis1[i]);
+       i++;
+     }
+    lcd_pos(1,0);             //设置显示位置为第二行的第1个字符
+     i = 0;
+    while(dis2[i] != '\0')
+     {
+       lcd_wdat(dis2[i]);      //显示字符
+       i++;
+     }
+ 	 lcd_pos(2,0);             //设置显示位置为第三行的第1个字符
+     i = 0;
+    while(dis3[i] != '\0')
+     {
+       lcd_wdat(dis3[i]);      //显示字符
+       i++;
+     }
+	 lcd_pos(3,0);             //设置显示位置为第四行的第1个字符
+     i = 0;
+    while(dis4[i] != '\0')
+     {
+       lcd_wdat(dis4[i]);      //显示字符
+       i++;
+     }
+	 }
+
+
+
+
+	 }
+	 
+	  
+       
+}
+
+/*********************************************************/
+/*                                                       */
+/* 设定显示位置                                          */
+/*                                                       */
+/*********************************************************/
+void lcd_pos(uchar X,uchar Y)
+{                          
+   uchar  pos;
+   if (X==0)
+     {X=0x80;}
+   else if (X==1)
+     {X=0x90;}
+   else if (X==2)
+     {X=0x88;}
+   else if (X==3)
+     {X=0x98;}
+   pos = X+Y ;  
+   lcd_wcmd(pos);     //设置显示地址
+}lcd_wdat(dis2[i]);      //显示字符
+       i++;
+     }
+ 	 lcd_pos(2,0);             //设置显示位置为第三行的第1个字符
+     i = 0;
+    while(dis3[i] != '\0')
+     {
+       lcd_wdat(dis3[i]);      //显示字符
+       i++;
+     }
+	 lcd_pos(3,0);             //设置显示位置为第四行的第1个字符
+     i = 0;
+    while(dis4[i] != '\0')
+     {
+       lcd_wdat(dis4[i]);      //显示字符
+       i++;
+     }
+	 }
+
+
+
+
+	 }
+	 
+	  
+       
+}
+
+/*********************************************************/
+/*                                                       */
+/* 设定显示位置    
